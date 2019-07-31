@@ -6,7 +6,9 @@ const Scene = require('telegraf/scenes/base');
 
 // Broadcast scene
 const broadcastScene = new Scene('broadcast');
-broadcastScene.enter((ctx, db, username) => {
+broadcastScene.enter(ctx => {
+  console.log('scene entered');
+  const { db, username } = ctx.scene.state;
   fbFunc.checkIfOrganiser(db, username).then(res => {
     if (res)
       return ctx.reply('Enter your desired broadcast message.', {
@@ -15,39 +17,29 @@ broadcastScene.enter((ctx, db, username) => {
         }
       });
     else {
+      console.log('exiting scene');
+      ctx.scene.leave();
       return ctx.reply(PERMISSION_DENIED);
     }
   });
 });
 broadcastScene.on('message', ctx => {
+  console.log('in on message in scene');
   sendToParticipants(ctx).then(_ => {
     console.log('broadcasting');
+    ctx.reply(`Broadcasted your message: "${ctx.message.text}"`);
     ctx.scene.leave();
   });
 });
-broadcastScene.leave(ctx => ctx.reply('Broadcasted your message.'));
+// broadcastScene.leave(ctx => ctx.reply('Leaving the broadcast dialogue scene.'));
 
 module.exports.broadcastScene = broadcastScene;
 
 module.exports.botOrgBroadcast = (bot, db) => {
   bot.command('broadcast', ctx => {
+    console.log('broadcast command called');
     let username = ctx.from.username;
-    ctx.scene.enter('broadcast', db, username);
-
-    fbFunc.checkIfOrganiser(db, username).then(res => {
-      if (res)
-        return ctx.reply(
-          `Hello @${username}, please type the message you want to broadcast:`,
-          {
-            reply_markup: {
-              force_reply: true
-            }
-          }
-        );
-      else {
-        return ctx.reply(PERMISSION_DENIED);
-      }
-    });
+    ctx.scene.enter('broadcast', { db, username });
   });
 };
 

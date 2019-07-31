@@ -1,6 +1,7 @@
 const ORGANISERS = 'organisers';
 const PARTICIPANTS = 'participants';
 const TIMESTAMPS = 'timestamps';
+const CHALLENGES = 'challenges';
 
 module.exports.checkIfusernameExists = async (db, username) => {
   const participantRef = db.collection(PARTICIPANTS).doc(username);
@@ -74,14 +75,9 @@ module.exports.getChallengesList = async db => {
   const challengesRef = db.collection(CHALLENGES);
   try {
     let allDocs = await challengesRef.get();
-    // let res = [];
-    // allDocs.forEach(doc => {
-    //   let indivDoc = doc.data();
-    //   if (indivDoc.chatID !== '') {
-    //     res.push(indivDoc);
-    //   }
-    // });
-    return allDocs;
+    return allDocs.docs.map(doc => {
+      return { id: doc.id, organisers: doc.data().organisers };
+    });
   } catch (err) {
     console.log(err);
   }
