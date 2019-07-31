@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/AkaHitsuji/telegrafBot#readme",
   "dependencies": {
-    "telegraf": "^3.32.0"
+    "telegraf": "^3.32.0",
+    "firebase-admin": "^8.3.0"
   }
 }
