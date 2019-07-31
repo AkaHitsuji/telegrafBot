@@ -1,12 +1,16 @@
 const config = require('./config/config.json');
+const session = require('telegraf/session');
 
-<<<<<<< HEAD
 const { db, bot } = require('./init');
 let {
   getDifferences,
   leaderboardDummy,
   leaderboardDummyOld
 } = require('./compStats');
+
+const Stage = require('telegraf/stage');
+const Scene = require('telegraf/scenes/base');
+const { leave } = Stage;
 
 //import commands from botActions
 const {
@@ -15,25 +19,19 @@ const {
   botLeaderboard,
   botAboutMe,
   botOrgBroadcast,
+  stage,
   botStop
 } = require('./botActions');
-// botOrgBroadcast(bot, db);
+
+bot.use(session());
+bot.use(stage.middleware());
+botOrgBroadcast(bot, db);
 botStart(bot, db);
 botHelp(bot, db);
 botAboutMe(bot, db);
 botLeaderboard(bot, db, leaderboardDummy);
-
 botStop(bot, db);
 
 bot.on('sticker', ctx => ctx.reply('👍'));
 bot.hears('hi', ctx => ctx.reply('Hey there'));
-bot.launch();
-=======
-const bot = new Telegraf(config.apikey)
-bot.start((ctx) => ctx.reply('Welcome'))
-bot.help((ctx) => ctx.reply('Send me a sticker'))
-bot.on('sticker', (ctx) => ctx.reply('👍'))
-bot.hears('hi', (ctx) => ctx.reply('Hey there'))
-bot.command('asdf', (ctx) => ctx.reply('yoyoyo'))
-bot.launch()
->>>>>>> 412adb084eff3d4d9a6efc4bf6ece9411785ee48
+bot.startPolling();
