@@ -17,6 +17,8 @@ askAboutChallengeScene.enter(ctx => {
 
 // get question.
 
+// send question to the organisers. also attach the asker's username and name.
+
 // confirmation
 askAboutChallengeScene.leave(ctx =>
   ctx.reply('Feel free to ask anymore questions, using the /ask command.')
