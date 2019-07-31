@@ -1,0 +1,22 @@
+{
+  "name": "telegrafbot",
+  "version": "1.0.0",
+  "description": "test for telegraf framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkaHitsuji/telegrafBot.git"
+  },
+  "author": "Ang Yang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AkaHitsuji/telegrafBot/issues"
+  },
+  "homepage": "https://github.com/AkaHitsuji/telegrafBot#readme",
+  "dependencies": {
+    "telegraf": "^3.32.0"
+  }
+}
