@@ -1,13 +1,12 @@
 const fbFunc = require('../firebaseFunctions');
 const { db } = require('../init');
+const { PERMISSION_DENIED } = require('./constants');
 
-const Stage = require('telegraf/stage');
 const Scene = require('telegraf/scenes/base');
-const { leave } = Stage;
 
 // Broadcast scene
-const broadcast = new Scene('broadcast');
-broadcast.enter((ctx, db, username) => {
+const broadcastScene = new Scene('broadcast');
+broadcastScene.enter((ctx, db, username) => {
   fbFunc.checkIfOrganiser(db, username).then(res => {
     if (res)
       return ctx.reply('Enter your desired broadcast message.', {
@@ -16,26 +15,19 @@ broadcast.enter((ctx, db, username) => {
         }
       });
     else {
-      return ctx.reply('unauthorized');
+      return ctx.reply(PERMISSION_DENIED);
     }
   });
 });
-broadcast.on('message', ctx => {
+broadcastScene.on('message', ctx => {
   sendToParticipants(ctx).then(_ => {
     console.log('broadcasting');
     ctx.scene.leave();
   });
 });
-broadcast.leave(ctx => ctx.reply('Broadcasted your message.'));
+broadcastScene.leave(ctx => ctx.reply('Broadcasted your message.'));
 
-// Create scene manager
-const stage = new Stage();
-stage.command('cancel', leave());
-
-// Scene registration
-stage.register(broadcast);
-
-module.exports.stage = stage;
+module.exports.broadcastScene = broadcastScene;
 
 module.exports.botOrgBroadcast = (bot, db) => {
   bot.command('broadcast', ctx => {
@@ -45,7 +37,7 @@ module.exports.botOrgBroadcast = (bot, db) => {
     fbFunc.checkIfOrganiser(db, username).then(res => {
       if (res)
         return ctx.reply(
-          `Hello ${username}, please type your broadcast text.`,
+          `Hello @${username}, please type the message you want to broadcast:`,
           {
             reply_markup: {
               force_reply: true
@@ -53,7 +45,7 @@ module.exports.botOrgBroadcast = (bot, db) => {
           }
         );
       else {
-        return ctx.reply('unauthorized');
+        return ctx.reply(PERMISSION_DENIED);
       }
     });
   });

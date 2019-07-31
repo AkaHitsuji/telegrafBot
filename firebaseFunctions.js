@@ -43,6 +43,16 @@ module.exports.checkIfOrganiser = async (db, username) => {
   }
 };
 
+module.exports.checkIfParticipant = async (db, username) => {
+  const partRef = db.collection(PARTICIPANTS).doc(username);
+  let partDoc = await partRef.get();
+  if (!partDoc.exists) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 module.exports.getParticipantList = async db => {
   const partRef = db.collection(PARTICIPANTS);
   try {
@@ -55,6 +65,23 @@ module.exports.getParticipantList = async db => {
       }
     });
     return res;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+module.exports.getChallengesList = async db => {
+  const challengesRef = db.collection(CHALLENGES);
+  try {
+    let allDocs = await challengesRef.get();
+    // let res = [];
+    // allDocs.forEach(doc => {
+    //   let indivDoc = doc.data();
+    //   if (indivDoc.chatID !== '') {
+    //     res.push(indivDoc);
+    //   }
+    // });
+    return allDocs;
   } catch (err) {
     console.log(err);
   }

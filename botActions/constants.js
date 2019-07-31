@@ -67,6 +67,8 @@ module.exports.notStartedError = name =>
   `Hello ${name}, you have not initialized me yet. Use the command /start to do so.`;
 
 module.exports.ERROR_MESSAGE = 'An error occurred, please try again later.';
+module.exports.PERMISSION_DENIED =
+  'You are not authorised to perform this action.';
 
 module.exports.ORGANIZER_HELP_MESSAGE =
   '*Welcome to CodeIT Suisse, I am askCodiBot!* \n My supported commands are:\n /start - init conversation and map chatID to organiser \n /help - provides details about available functions \n /broadcast message - send message to all. text followed by command contains the message to be sent \n /stats teamName - retrieve statistics for team. text followed by command contains the team namd to be retrieved \n /leaderboard - View competition leaderboard\n /starttimer - Start the 24 hour timer \n /removestarttime - Remove the start time\n /checkstarttime - Check when the competition started';
