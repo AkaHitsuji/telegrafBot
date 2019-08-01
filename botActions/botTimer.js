@@ -1,51 +1,7 @@
 const fbFunc = require('../firebaseFunctions');
-const {
-  encouragement,
-  finalMoments,
-  encouragementGIF,
-  finalMomentsGif,
-  notRegisteredError
-} = require('./constants');
+const { notRegisteredError, TOTAL_COMP_TIME } = require('./constants');
 
-const getRandomInt = max => {
-  return Math.floor(Math.random() * Math.floor(max));
-};
-
-const parseTimeToString = t => {
-  let parsedString = '';
-  if (t > 0) {
-    const hours = parseInt(t / 3600000);
-    t = t - hours * 3600000;
-    const minutes = parseInt(t / 60000);
-    t = t - minutes * 60000;
-    const seconds = parseInt(t / 1000);
-    if (hours > 0) {
-      parsedString = `You have ${hours} hours, ${minutes} minutes, ${seconds} seconds left! `;
-      parsedString += encouragement(getRandomInt(4));
-    } else {
-      parsedString = `There are ${minutes} minutes, ${seconds} seconds left! `;
-      parsedString += finalMoments(getRandomInt(4));
-    }
-  } else {
-    parsedString = 'The competition is over! Thank you for participating :)';
-  }
-  return parsedString;
-};
-
-const gifToSend = t => {
-  let gifString = '';
-  if (t > 0) {
-    const hours = parseInt(t / 3600000);
-    if (hours > 0) {
-      gifString = encouragementGIF(getRandomInt(4));
-    } else {
-      gifString = finalMomentsGif(getRandomInt(4));
-    }
-  } else {
-    gifString = 'https://media.giphy.com/media/3o7qDEq2bMbcbPRQ2c/giphy.gif';
-  }
-  return gifString;
-};
+const { parseTimeToString, gifToSend } = require('./utils');
 
 module.exports = (bot, db) => {
   bot.command('starttimer', ctx => {
@@ -132,7 +88,7 @@ module.exports = (bot, db) => {
         if (typeof chatID === 'number') {
           const currTime = Math.floor(Date.now());
           fbFunc.getStartTime(db).then(startTime => {
-            const timeLeft = totalCompTime - (currTime - startTime);
+            const timeLeft = TOTAL_COMP_TIME - (currTime - startTime);
             ctx.reply(parseTimeToString(timeLeft));
             return ctx.replyWithVideo(gifToSend(timeLeft));
           });
@@ -170,4 +126,3 @@ module.exports = (bot, db) => {
 
 const errorMessage = 'This function does not exist for this user.';
 // 24 hours in milliseconds
-const totalCompTime = 86400000;

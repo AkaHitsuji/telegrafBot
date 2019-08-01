@@ -3,6 +3,7 @@ module.exports.botHelp = require('./botHelp');
 module.exports.botLeaderboard = require('./botLeaderboard');
 module.exports.botAboutMe = require('./botAboutMe');
 module.exports.botOrgBroadcast = require('./botOrgBroadcast').botOrgBroadcast;
+module.exports.botOrgBroadcastTimeLeft = require('./botOrgBroadcast').botOrgBroadcastTimeLeft;
 module.exports.broadcastScene = require('./botOrgBroadcast').broadcastScene;
 module.exports.botStop = require('./botStop');
 module.exports.botTimer = require('./botTimer');

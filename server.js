@@ -22,7 +22,8 @@ const {
   botTimer,
   botSendPositionChange,
   botAskAboutChallenge,
-  askAboutChallengeScene
+  askAboutChallengeScene,
+  botOrgBroadcastTimeLeft
 } = require('./botActions');
 
 // Create scene manager
@@ -36,6 +37,7 @@ stage.register(askAboutChallengeScene);
 bot.use(session());
 bot.use(stage.middleware());
 botOrgBroadcast(bot, db);
+botOrgBroadcastTimeLeft(bot, db);
 botStart(bot, db);
 botHelp(bot, db);
 botAboutMe(bot, db);

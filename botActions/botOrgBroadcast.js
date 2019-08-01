@@ -1,6 +1,6 @@
 const fbFunc = require('../firebaseFunctions');
-const { db } = require('../init');
-const { PERMISSION_DENIED } = require('./constants');
+const { PERMISSION_DENIED, TOTAL_COMP_TIME } = require('./constants');
+const { parseTimeToString } = require('./utils');
 
 const Scene = require('telegraf/scenes/base');
 
@@ -25,7 +25,8 @@ broadcastScene.enter(ctx => {
 });
 broadcastScene.on('message', ctx => {
   console.log('in on message in scene');
-  sendToParticipants(ctx).then(_ => {
+  const { db } = ctx.scene.state;
+  sendToParticipants(ctx, ctx.message.text, db).then(_ => {
     console.log('broadcasting');
     ctx.reply(`Broadcasted your message: "${ctx.message.text}"`);
     ctx.scene.leave();
@@ -43,15 +44,44 @@ module.exports.botOrgBroadcast = (bot, db) => {
   });
 };
 
-// the command that invokes the function to send messages to multiple people
-const sendToParticipants = async ctx => {
-  fbFunc.getParticipantList(db).then(res => {
-    sendMessage(ctx, res, ctx.message.text);
+module.exports.botOrgBroadcastTimeLeft = (bot, db) => {
+  bot.command('broadcasttimeleft', ctx => {
+    console.log('in broadcast time left');
+    const username = ctx.from.username;
+    fbFunc.checkIfusernameExists(db, username).then(({ data, role }) => {
+      const { chatID, name } = data;
+      if (typeof chatID === 'number') {
+        if (role === 'organiser') {
+          const currTime = Math.floor(Date.now());
+          fbFunc.getStartTime(db).then(startTime => {
+            const timeLeft = TOTAL_COMP_TIME - (currTime - startTime);
+            const message = parseTimeToString(timeLeft);
+            sendToParticipants(ctx, message, db).then(_ => {
+              console.log('broadcasted time left');
+              return ctx.reply('Broadcasted time left to participants.');
+            });
+          });
+        } else if (role === 'participant') {
+          return ctx.reply(PERMISSION_DENIED);
+        }
+      } else {
+        return ctx.reply(notStartedError(name));
+      }
+    });
+  });
+};
+
+// ---------------- BELOW: functions for sending messages to multiple people -------------------
+const sendToParticipants = async (ctx, message, db) => {
+  console.log(db);
+  console.log('db above');
+  fbFunc.getParticipantList(db).then(ids => {
+    sendMessages(ctx, ids, message);
   });
 };
 
 //wraps asynchronous sendMessage function so that we can use it in main body
-const sendMessage = async (ctx, ids, message) => {
+const sendMessages = async (ctx, ids, message) => {
   const idArray = ids.map(async id => {
     const { chatID } = id;
     console.log(`sending message to ${chatID}`);
