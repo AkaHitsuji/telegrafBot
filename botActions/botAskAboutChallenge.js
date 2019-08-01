@@ -1,4 +1,6 @@
 const fbFunc = require('../firebaseFunctions');
+const Extra = require('telegraf/extra');
+const Markup = require('telegraf/markup');
 
 const Scene = require('telegraf/scenes/base');
 
@@ -6,12 +8,21 @@ const askAboutChallengeScene = new Scene('ask');
 askAboutChallengeScene.enter(ctx => {
   const { db, username, name } = ctx.scene.state;
   fbFunc.getChallengesList(db).then(challenges => {
-    ctx.reply('which challenge are you asking about?');
     console.log(challenges);
-    inlineKeyboardArray = challenges.map(c => [{ text: c, callback_data: c }]); // to be changed.
-    console.log(inlineKeyboardArray);
+    ctx.scene.state.challenges = challenges;
+    // inlineKeyboardArray = challenges.map(c => [{ text: c, callback_data: c }]); // to be changed.
+    const buttons = challenges.map(c => Markup.callbackButton(c.id, c.id));
+    ctx.reply('Which challenge does your question pertain to?', Extra.HTML().markup((m) =>
+    m.inlineKeyboard(
+      buttons, {columns: 2}
+    )))
     // display challenges as inline keyboard of options
   });
+});
+askAboutChallengeScene.on('callback_query', ctx => {
+  console.log('in callback query');
+  console.log(ctx.callbackQuery.data);
+  console.log(ctx.scene.state.challenges);
 });
 // retrieve organiser for that challenge.
 
@@ -50,4 +61,6 @@ module.exports.botAskAboutChallenge = (bot, db) => {
         ctx.reply('Error occurred.');
       });
   });
+
+  
 };
