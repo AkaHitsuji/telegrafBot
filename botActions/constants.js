@@ -67,12 +67,14 @@ module.exports.notStartedError = name =>
   `Hello ${name}, you have not initialized me yet. Use the command /start to do so.`;
 
 module.exports.ERROR_MESSAGE = 'An error occurred, please try again later.';
-
-module.exports.ORGANIZER_HELP_MESSAGE =
-  '*Welcome to CodeIT Suisse, I am askCodiBot!* \n My supported commands are:\n /start - init conversation and map chatID to organiser \n /help - provides details about available functions \n /broadcast message - send message to all. text followed by command contains the message to be sent \n /stats teamName - retrieve statistics for team. text followed by command contains the team namd to be retrieved \n /leaderboard - View competition leaderboard\n /starttimer - Start the 24 hour timer \n /removestarttime - Remove the start time\n /checkstarttime - Check when the competition started';
+module.exports.PERMISSION_DENIED =
+  'You are not authorised to perform this action.';
 
 module.exports.PARTICIPANT_HELP_MESSAGE =
-  '*Hello CodeIT Suisse organizer, welcome to askCodiBot!* \n My supported commands are: \n /start - register for CodeIT Suisse\n /help - provides details about available functions \n /timeleft - check time left for competition \n /mute - disable push notifications\n /leaderboard - View competition leaderboard\n /stats - retrieve team statistics (e.g position, number of submissions etc.)\n /feedback - trigger feedback form after competition is over \n /stop - Removes your account from database. You will no longer receive any updates\n /checkstarttime - Check when the competition started';
+  '*Welcome to CodeIT Suisse, I am askCodiBot!* \n My supported commands are:\n /start - init conversation and map chatID to organiser \n /help - provides details about available functions \n /stats teamName - retrieve statistics for team. text followed by command contains the team namd to be retrieved \n /leaderboard - View competition leaderboard\n /timeleft - check time left for competition \n /checkstarttime - Check when the competition started';
+
+module.exports.ORGANIZER_HELP_MESSAGE =
+  '*Hello CodeIT Suisse organizer, welcome to askCodiBot!* \n My supported commands are: \n /start - register for CodeIT Suisse\n /help - provides details about available functions \n /broadcast message - send message to all. text followed by command contains the message to be sent \n /timeleft - check time left for competition \n /mute - disable push notifications\n /leaderboard - View competition leaderboard\n /stats - retrieve team statistics (e.g position, number of submissions etc.)\n /feedback - trigger feedback form after competition is over \n /stop - Removes your account from database. You will no longer receive any updates\n /checkstarttime - Check when the competition started/starttimer - Start the 24 hour timer \n /removestarttime - Remove the start time';
 
 module.exports.ABOUT_ME_MESSAGE =
   'hElLO mY nAme iS cOdI. \n My makers are Ang Yang, Chuan De Sheng, See Jie Xun and Lim Dao Han.';

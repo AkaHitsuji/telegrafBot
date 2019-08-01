@@ -1,32 +1,52 @@
 const fbFunc = require('../firebaseFunctions');
+const { db } = require('../init');
+const { PERMISSION_DENIED } = require('./constants');
 
-module.exports = (bot, db) => {
-  bot
-    .command('broadcast', ctx => {
-      let username = ctx.from.username;
+const Scene = require('telegraf/scenes/base');
 
-      fbFunc.checkIfOrganiser(db, username).then(res => {
-        if (res)
-          return ctx.reply(
-            `Hello ${username}, please type your broadcast text.`
-          );
-        else {
-          return ctx.reply('unauthorized');
+// Broadcast scene
+const broadcastScene = new Scene('broadcast');
+broadcastScene.enter(ctx => {
+  console.log('scene entered');
+  const { db, username } = ctx.scene.state;
+  fbFunc.checkIfOrganiser(db, username).then(res => {
+    if (res)
+      return ctx.reply('Enter your desired broadcast message.', {
+        reply_markup: {
+          force_reply: true
         }
       });
-    })
-    .on('message', ctx => {
-      // cannot send message to multiple people on answer, hence we redirect to another command
-      return sendToParticipants(ctx, db, bot);
-    });
+    else {
+      console.log('exiting scene');
+      ctx.scene.leave();
+      return ctx.reply(PERMISSION_DENIED);
+    }
+  });
+});
+broadcastScene.on('message', ctx => {
+  console.log('in on message in scene');
+  sendToParticipants(ctx).then(_ => {
+    console.log('broadcasting');
+    ctx.reply(`Broadcasted your message: "${ctx.message.text}"`);
+    ctx.scene.leave();
+  });
+});
+// broadcastScene.leave(ctx => ctx.reply('Leaving the broadcast dialogue scene.'));
+
+module.exports.broadcastScene = broadcastScene;
+
+module.exports.botOrgBroadcast = (bot, db) => {
+  bot.command('broadcast', ctx => {
+    console.log('broadcast command called');
+    let username = ctx.from.username;
+    ctx.scene.enter('broadcast', { db, username });
+  });
 };
 
 // the command that invokes the function to send messages to multiple people
-const sendToParticipants = (ctx, db, bot) => {
+const sendToParticipants = async ctx => {
   fbFunc.getParticipantList(db).then(res => {
-    sendMessage(ctx, res, ctx.message.text).then(_ =>
-      bot.reply('Broadcast sent.')
-    );
+    sendMessage(ctx, res, ctx.message.text);
   });
 };
 
