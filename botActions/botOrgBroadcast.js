@@ -73,8 +73,6 @@ module.exports.botOrgBroadcastTimeLeft = (bot, db) => {
 
 // ---------------- BELOW: functions for sending messages to multiple people -------------------
 const sendToParticipants = async (ctx, message, db) => {
-  console.log(db);
-  console.log('db above');
   fbFunc.getParticipantList(db).then(ids => {
     sendMessages(ctx, ids, message);
   });

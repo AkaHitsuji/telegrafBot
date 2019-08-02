@@ -23,6 +23,7 @@ const {
   botSendPositionChange,
   botAskAboutChallenge,
   askAboutChallengeScene,
+  getQuestionScene,
   botOrgBroadcastTimeLeft
 } = require('./botActions');
 
@@ -33,6 +34,7 @@ stage.command('cancel', leave());
 // Register scenes
 stage.register(broadcastScene);
 stage.register(askAboutChallengeScene);
+stage.register(getQuestionScene);
 
 bot.use(session());
 bot.use(stage.middleware());

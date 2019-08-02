@@ -10,3 +10,4 @@ module.exports.botTimer = require('./botTimer');
 module.exports.botSendPositionChange = require('./botSendPositionChange');
 module.exports.botAskAboutChallenge = require('./botAskAboutChallenge').botAskAboutChallenge;
 module.exports.askAboutChallengeScene = require('./botAskAboutChallenge').askAboutChallengeScene;
+module.exports.getQuestionScene = require('./botAskAboutChallenge').getQuestionScene;
