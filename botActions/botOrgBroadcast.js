@@ -8,20 +8,27 @@ const Scene = require('telegraf/scenes/base');
 const broadcastScene = new Scene('broadcast');
 broadcastScene.enter(ctx => {
   console.log('scene entered');
-  const { db, username } = ctx.scene.state;
-  fbFunc.checkIfOrganiser(db, username).then(res => {
-    if (res)
-      return ctx.reply('Enter your desired broadcast message.', {
-        reply_markup: {
-          force_reply: true
-        }
-      });
-    else {
-      console.log('exiting scene');
-      ctx.scene.leave();
-      return ctx.reply(PERMISSION_DENIED);
+  return ctx.reply(
+    'Enter your desired broadcast message (or /cancel to abort broadcast).',
+    {
+      reply_markup: {
+        force_reply: true
+      }
     }
-  });
+  );
+  // fbFunc.checkIfOrganiser(db, username).then(res => {
+  //   if (res)
+  //     return ctx.reply('Enter your desired broadcast message.', {
+  //       reply_markup: {
+  //         force_reply: true
+  //       }
+  //     });
+  //   else {
+  //     console.log('exiting scene');
+  //     ctx.scene.leave();
+  //     return ctx.reply(PERMISSION_DENIED);
+  //   }
+  // });
 });
 broadcastScene.on('message', ctx => {
   console.log('in on message in scene');
@@ -37,10 +44,27 @@ broadcastScene.on('message', ctx => {
 module.exports.broadcastScene = broadcastScene;
 
 module.exports.botOrgBroadcast = (bot, db) => {
+  // bot.command('broadcast', ctx => {
+  //   console.log('broadcast command called');
+  //   let username = ctx.from.username;
+  //   ctx.scene.enter('broadcast', { db, username });
+  // });
+
   bot.command('broadcast', ctx => {
     console.log('broadcast command called');
-    let username = ctx.from.username;
-    ctx.scene.enter('broadcast', { db, username });
+    const username = ctx.from.username;
+    fbFunc.checkIfusernameExists(db, username).then(({ data, role }) => {
+      const { chatID, name } = data;
+      if (typeof chatID === 'number') {
+        if (role === 'organiser') {
+          ctx.scene.enter('broadcast', { db });
+        } else if (role === 'participant') {
+          return ctx.reply(PERMISSION_DENIED);
+        }
+      } else {
+        return ctx.reply(notStartedError(name));
+      }
+    });
   });
 };
 
