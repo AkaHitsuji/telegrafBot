@@ -1,8 +1,8 @@
 const fbFunc = require('../firebaseFunctions');
 const Extra = require('telegraf/extra');
 const Markup = require('telegraf/markup');
-
 const Scene = require('telegraf/scenes/base');
+const { notRegisteredError, ORGANIZER_ASK_MESSAGE, ASK_LEAVE_MESSAGE } = require('./constants');
 
 const askAboutChallengeScene = new Scene('ask');
 askAboutChallengeScene.enter(ctx => {
@@ -80,7 +80,7 @@ getQuestionScene.on('callback_query', ctx => {
 
 // confirmation
 getQuestionScene.leave(ctx =>
-  ctx.reply('Feel free to ask anymore questions, using the /ask command.')
+  ctx.reply(ASK_LEAVE_MESSAGE)
 );
 
 module.exports.askAboutChallengeScene = askAboutChallengeScene;
@@ -97,9 +97,9 @@ module.exports.botAskAboutChallenge = (bot, db) => {
           return ctx.sendMessage(notRegisteredError(name));
         }
         if (role === 'organiser') {
-          console.log(`organiser @${name} in ask command`);
+          console.log(`organiser ${name} in ask command`);
           return ctx.reply(
-            "The /ask function is for participants to ask questions to the organisers about the challenges. As an organiser you shouldn't need to be asking any questions."
+            ORGANIZER_ASK_MESSAGE
           );
         }
         console.log('participant asked');

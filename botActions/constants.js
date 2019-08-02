@@ -79,4 +79,6 @@ module.exports.ORGANIZER_HELP_MESSAGE =
 module.exports.ABOUT_ME_MESSAGE =
   'hElLO mY nAme iS cOdI. \n My makers are Ang Yang, Chuan De Sheng, See Jie Xun and Lim Dao Han.';
 
+module.exports.ORGANIZER_ASK_MESSAGE = 'The /ask function is for participants to ask questions to the organisers about the challenges. As an organiser you shouldn\'t need to be asking any questions.'
+
 module.exports.TOTAL_COMP_TIME = 86400000;
