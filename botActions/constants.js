@@ -81,6 +81,6 @@ module.exports.ABOUT_ME_MESSAGE =
 
 module.exports.ORGANIZER_ASK_MESSAGE = 'The /ask function is for participants to ask questions to the organisers about the challenges. As an organiser you shouldn\'t need to be asking any questions.'
 
-module.exports.ASK_LEAVE_MESSAGE = 'Feel free to ask anymore questions, using the /ask command.'
+module.exports.ASK_LEAVE_MESSAGE = 'Question sent! Feel free to ask anymore questions, using the /ask command.'
 
 module.exports.TOTAL_COMP_TIME = 86400000;
