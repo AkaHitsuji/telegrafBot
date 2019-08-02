@@ -5,7 +5,8 @@ const Scene = require('telegraf/scenes/base');
 const {
   notRegisteredError,
   ORGANIZER_ASK_MESSAGE,
-  ASK_LEAVE_MESSAGE
+  ASK_LEAVE_MESSAGE,
+  ASK_CANCEL_LEAVE_MESSAGE
 } = require('./constants');
 
 const CONFIRM_SEND = 'send';
@@ -13,7 +14,7 @@ const CANCEL_SEND = 'cancel';
 
 const askAboutChallengeScene = new Scene('ask');
 askAboutChallengeScene.enter(ctx => {
-  const { db, name, team } = ctx.scene.state;
+  const { db, name } = ctx.scene.state;
   fbFunc.getChallengesList(db).then(challenges => {
     console.log(challenges);
     ctx.scene.state.challenges = challenges;
@@ -63,16 +64,15 @@ getQuestionScene.on('message', ctx => {
   );
 });
 getQuestionScene.on('callback_query', ctx => {
-  console.log(ctx.scene.state.question);
-  console.log(ctx.scene.state.challenge);
-  console.log(ctx.scene.state.team);
+  // console.log(ctx.scene.state.question);
+  // console.log(ctx.scene.state.challenge);
+  // console.log(ctx.scene.state.team);
   const { question, challenge, team } = ctx.scene.state;
   console.log(`callback data: ${ctx.callbackQuery.data}`);
   if (ctx.callbackQuery.data === CONFIRM_SEND) {
     ctx.scene.state.challenge.organisers.forEach(orgRef => {
       orgRef.get().then(organiser => {
         const { chatID, name } = organiser.data();
-        console.log(chatID);
         //send msg
         const message = `Hi ${name}, question received from team ${team} on ${
           challenge.id
@@ -81,17 +81,14 @@ getQuestionScene.on('callback_query', ctx => {
         ctx.telegram.sendMessage(chatID, message);
       });
     });
+    ctx.reply(ASK_LEAVE_MESSAGE);
     ctx.scene.leave();
   } else if (ctx.callbackQuery.data === CANCEL_SEND) {
     console.log('cancelling');
+    ctx.reply(ASK_CANCEL_LEAVE_MESSAGE);
     ctx.scene.leave();
   }
 });
-
-// send question to the organisers. also attach the asker's username and name.
-
-// confirmation
-getQuestionScene.leave(ctx => ctx.reply(ASK_LEAVE_MESSAGE));
 
 module.exports.askAboutChallengeScene = askAboutChallengeScene;
 module.exports.getQuestionScene = getQuestionScene;
